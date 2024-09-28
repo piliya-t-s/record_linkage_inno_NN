@@ -1,4 +1,3 @@
-
 #!/bin/bash
 set -e 
 clickhouse client -n <<-EOSQL

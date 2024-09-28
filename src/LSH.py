@@ -68,19 +68,3 @@ class MinHashLSH:
         set2 = set(str2.lower().split())
         return len(set1.intersection(set2)) / len(set1.union(set2))
 
-# Example usage
-
-lsh = MinHashLSH(num_hash_functions=100, num_bands=20, threshold=0.6)
-
-for s in strings:
-    lsh.add_string(s)
-
-similar_groups = lsh.find_similar_groups()
-
-print("Similar groups (by index):")
-for group in similar_groups:
-    print(group)
-
-print("\nSimilar groups (by string):")
-for group in similar_groups:
-    print([strings[i] for i in group])
