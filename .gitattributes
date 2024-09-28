@@ -1,2 +1,6 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Preserve LF for shell scripts and Python files
+*.sh text eol=lf
+*.py text eol=lf
+
+# Preserve CRLF for batch files
+*.bat text eol=crlf
