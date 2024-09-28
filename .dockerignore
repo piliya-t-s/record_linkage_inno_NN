@@ -1,0 +1,14 @@
+# Ignore virtual environments
+.venv/
+
+input_data/
+
+# Ignore large input files
+large_input_file.txt
+folder_with_large_files/
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore any ot
