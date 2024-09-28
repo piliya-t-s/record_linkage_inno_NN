@@ -8,7 +8,7 @@ client = Client(host='clickhouse', port=9000, user='default', password='')
 
 # Example query
 def query_clickhouse():
-    query = "SELECT full_name FROM table_dataset1 LIMIT 100"
+    query = "SELECT full_name FROM table_dataset1 LIMIT 10000"
     data = client.execute(query)
     df = pd.DataFrame(data, columns=['Name'])
     
@@ -22,12 +22,11 @@ if __name__ == "__main__":
 
     # очистка
     print("filtering data...")
-    # data['Name'] = data["Name"].apply(normalize_name)
+    data['Name'] = data["Name"].apply(normalize_name)
     data = data['Name']
     print(data)
     
     print("processing...")
-
     lsh = MinHashLSH(num_hash_functions=100, num_bands=20, threshold=0.6)
 
     for s in data:

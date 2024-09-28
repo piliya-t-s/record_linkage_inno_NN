@@ -15,7 +15,7 @@ class MinHashLSH:
                 for _ in range(self.num_hash_functions)]
 
     def _minhash_signature(self, string):
-        shingles = set(string[i:i+3].lower() for i in range(len(string) - 2))
+        shingles = set(string[i:i+3] for i in range(len(string) - 2))
         signature = []
         for a, b in self.hash_functions:
             min_hash = min((a * hash(shingle) + b) % (2**32 - 1) for shingle in shingles)
