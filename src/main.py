@@ -2,6 +2,7 @@ print("helleh woow")
 
 import pandas as pd
 from clickhouse_driver import Client
+from .filters import normalize_name
 
 # Connect to the ClickHouse instance
 client = Client(host='clickhouse', port=9000, user='default', password='')
@@ -16,6 +17,7 @@ def query_clickhouse():
 
 if __name__ == "__main__":
     print("test") 
-    q = query_clickhouse()
+    df = query_clickhouse()
 
-    print(q)
+    print(df)
+    print(df.apply(normalize_name))
