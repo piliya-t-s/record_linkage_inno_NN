@@ -1,4 +1,3 @@
-
 #!/bin/bash
 set -e 
 clickhouse client -n <<-EOSQL
@@ -16,7 +15,6 @@ engine = MergeTree()
 partition by murmurHash3_32(uid) % 8
 order by uid;
 EOSQL
-
 set -e 
 clickhouse client -n <<-EOSQL
 create or replace table table_dataset2
@@ -33,7 +31,6 @@ engine = MergeTree()
 partition by murmurHash3_32(uid) % 8
 order by uid;
 EOSQL
-
 set -e 
 clickhouse client -n <<-EOSQL
 create or replace table table_dataset3
@@ -48,7 +45,6 @@ engine = MergeTree()
 partition by murmurHash3_32(uid) % 8
 order by uid;
 EOSQL
-
 set -e 
 clickhouse client -n <<-EOSQL
 create or replace table table_results
@@ -60,9 +56,6 @@ create or replace table table_results
 engine = MergeTree()
 order by id_is1;
 EOSQL
-
 clickhouse-client --query="INSERT INTO table_dataset1 FORMAT CSV" < /csv_files/main1.csv
-
 clickhouse-client --query="INSERT INTO table_dataset2 FORMAT CSV" < /csv_files/main2.csv
-
 clickhouse-client --query="INSERT INTO table_dataset3 FORMAT CSV" < /csv_files/main3.csv
