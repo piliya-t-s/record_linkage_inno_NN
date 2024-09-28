@@ -1,5 +1,3 @@
-print("helleh woow")
-
 import pandas as pd
 from clickhouse_driver import Client
 from .filters import normalize_name
@@ -16,8 +14,9 @@ def query_clickhouse():
     return df
 
 if __name__ == "__main__":
-    print("test") 
-    df = query_clickhouse()
 
-    print(df)
-    print(df.apply(normalize_name))
+
+    data = query_clickhouse()
+
+    # очистка
+    print(data.apply(normalize_name))
