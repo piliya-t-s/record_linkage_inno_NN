@@ -1,24 +1,29 @@
 import pandas as pd
 from clickhouse_driver import Client
-from .filters import normalize_name
-from .LSH import MinHashLSH
+from filters import normalize_name
+from LSH import MinHashLSH
+import subprocess
+import os
 
 # Connect to the ClickHouse instance
 client = Client(host='clickhouse', port=9000, user='default', password='')
 
-# Example query
-def query_clickhouse():
-    query = "SELECT full_name FROM table_dataset1 LIMIT 10000"
-    data = client.execute(query)
-    df = pd.DataFrame(data, columns=['Name'])
+# # Example query
+# def query_clickhouse():
+#     query = "SELECT full_name FROM table_dataset1 LIMIT 10000"
+#     data = client.execute(query)
+#     df = pd.DataFrame(data, columns=['Name'])
     
-    return df
+#     return df
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
+if __name__ == "not_main":
 
-    print('querying the first db...')
-    data = query_clickhouse()
-    print(data)
+    # print('querying the first db...')
+    # data = query_clickhouse()
+    # print(data)
+
+    data = pd.read_csv("input_data\main1.csv")['Name']
 
     # очистка
     print("filtering data...")
@@ -41,5 +46,4 @@ if __name__ == "__main__":
     print("\nSimilar groups (by string):")
     for group in similar_groups:
         print([data[i] for i in group])
-
 
