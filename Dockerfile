@@ -31,7 +31,8 @@ RUN apt-get update && \
     python -m pip install -r requirements.txt
 
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get -y install gcc mono-mcs && \
+
+RUN apt-get -y install gcc mono-mcs libssl-dev&& \
     rm -rf /var/lib/apt/lists/*
 
 
