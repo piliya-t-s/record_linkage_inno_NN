@@ -2,3 +2,5 @@ input_data/*
 .venv
 
 /src/__pycache__
+/src/bin/run
+src/bin/test.exe

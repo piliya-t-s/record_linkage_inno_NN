@@ -16,34 +16,61 @@ client = Client(host='clickhouse', port=9000, user='default', password='')
     
 #     return df
 
-# if __name__ == "__main__":
-if __name__ == "not_main":
+if __name__ == "__main__":
+
 
     # print('querying the first db...')
     # data = query_clickhouse()
     # print(data)
 
-    data = pd.read_csv("input_data\main1.csv")['Name']
+    data = pd.read_csv("input_data\main1.csv")['full_name']
 
     # очистка
     print("filtering data...")
-    data['Name'] = data["Name"].apply(normalize_name)
-    data = data['Name']
-    print(data)
+    # data['Name'] = data["Name"].apply(normalize_name)
+    data = data['full_name']
+    # print(data)
     
     print("processing...")
-    lsh = MinHashLSH(num_hash_functions=100, num_bands=20, threshold=0.6)
 
-    for s in data:
-        lsh.add_string(s)
 
-    similar_groups = lsh.find_similar_groups()
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    bin_path = os.path.join(script_dir, r"bin\test.exe")
 
-    print("Similar groups (by index):")
-    for group in similar_groups:
-        print(group)
 
-    print("\nSimilar groups (by string):")
-    for group in similar_groups:
-        print([data[i] for i in group])
+    process = subprocess.Popen(
+        [bin_path],  # Path to the C executable
+        stdin=subprocess.PIPE,     # Open pipe for stdin
+        stdout=subprocess.PIPE,    # Open pipe for stdout
+        stderr=subprocess.PIPE     # Open pipe for stderr
+    )
 
+    # Send input to the C program's stdin
+
+    data_len = len(data)
+    
+    print(f"sending {data_len} strings")
+
+    process.stdin.write(str(data_len).encode())
+
+    for i in range(data_len):
+        print(data[i])
+        process.stdin.write(data[i].encode())
+    
+    
+    process.stdin.flush()  # Ensure input is sent immediately
+
+    # Read the C program's response
+    output = process.stdout.readline().decode().strip()
+    print(f"Received from C program: {output}")
+
+    # Check for any errors
+    stderr = process.stderr.read().decode().strip()
+    if stderr:
+        print(f"Error: {stderr}")
+
+    # Close the subprocess
+    process.stdin.close()
+    process.stdout.close()
+    process.stderr.close()
+    process.wait()
