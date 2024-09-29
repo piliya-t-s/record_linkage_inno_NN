@@ -4,6 +4,17 @@ from .filters import normalize_name
 from .LSH import MinHashLSH
 import subprocess
 import os
+import subprocess
+import threading
+import time
+
+def read_output(process):
+    while True:
+        output = process.stdout.readline()
+        if output:
+            print(f"{output}")
+        else:
+            break
 
 # Connect to the ClickHouse instance
 client = Client(host='clickhouse', port=9000, user='default', password='')
@@ -22,52 +33,34 @@ if __name__ == "__main__":
     data = query_clickhouse()
     print(data)
 
-    # очистка
-    print("filtering data...")
-    data['Name'] = data["Name"].apply(normalize_name)
-    data = data['Name']
-    # print(data)
-    
-    print("processing...")
-
-
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    bin_path = os.path.join(script_dir, r"bin/run")
-
-
     process = subprocess.Popen(
-        [bin_path],  # Path to the C executable
-        stdin=subprocess.PIPE,     # Open pipe for stdin
-        stdout=subprocess.PIPE,    # Open pipe for stdout
-        stderr=subprocess.PIPE     # Open pipe for stderr
+        ['src/bin/run'],  
+        stdin=subprocess.PIPE,  
+        stdout=subprocess.PIPE,  
+        stderr=subprocess.PIPE,
+        text=True, 
+        bufsize=1, 
     )
 
-    # Send input to the C program's stdin
 
-    data_len = len(data)
-    
-    print(f"sending {data_len} strings")
+    output_thread = threading.Thread(target=read_output, args=(process,))
+    output_thread.start()
 
-    process.stdin.write(str(data_len).encode())
 
-    for i in range(data_len):
-        print(data[i])
-        process.stdin.write(data[i].encode())
-    
-    
-    process.stdin.flush()  # Ensure input is sent immediately
+    process.stdin.write(str(100) + "\n")
+    process.stdin.write(str(5) + "\n")
+    process.stdin.write(str(0.7) + "\n")
+    process.stdin.write(str(len(data['Name'])) + "\n")
 
-    # Read the C program's response
-    output = process.stdout.readline().decode().strip()
-    print(f"Received from C program: {output}")
+    for i in data['Name']:
+        process.stdin.write(i + "\n")
+        process.stdin.flush()
+        
+    process.stdin.flush()
 
-    # Check for any errors
-    stderr = process.stderr.read().decode().strip()
-    if stderr:
-        print(f"Error: {stderr}")
+    time.sleep(1)
 
-    # Close the subprocess
-    process.stdin.close()
-    process.stdout.close()
-    process.stderr.close()
-    process.wait()
+
+    process.stdin.close() 
+    output_thread.join() 
+    process.wait() 
