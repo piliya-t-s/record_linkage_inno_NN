@@ -64,10 +64,6 @@ int main() {
         for(j = 0; j < num_hash_functions; j++) {
             int num_band = (int) j / width;
             band_sign_sum += signatures[i][j];
-            // printf("%s, %i, %i, %i \n \n", 
-            //     strings[i], num_band, 
-            //     band_sign_sum, signatures[i][j]);
-
             if (j % width == 0 && j != 0) {
                 insert(dict, num_band, band_sign_sum, i);
                 band_sign_sum = 0;

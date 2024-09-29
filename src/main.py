@@ -31,7 +31,6 @@ if __name__ == "__main__":
 
     print('querying the first db...')
     data = query_clickhouse()
-    print(data)
 
     process = subprocess.Popen(
         ['src/bin/run'],  
@@ -42,7 +41,7 @@ if __name__ == "__main__":
         bufsize=1, 
     )
 
-
+    print('processing...')
     output_thread = threading.Thread(target=read_output, args=(process,))
     output_thread.start()
 
@@ -59,7 +58,6 @@ if __name__ == "__main__":
     process.stdin.flush()
 
     time.sleep(1)
-
 
     process.stdin.close() 
     output_thread.join() 
