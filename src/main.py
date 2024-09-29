@@ -1,41 +1,38 @@
 import pandas as pd
 from clickhouse_driver import Client
-from filters import normalize_name
-from LSH import MinHashLSH
+from .filters import normalize_name
+from .LSH import MinHashLSH
 import subprocess
 import os
 
 # Connect to the ClickHouse instance
 client = Client(host='clickhouse', port=9000, user='default', password='')
 
-# # Example query
-# def query_clickhouse():
-#     query = "SELECT full_name FROM table_dataset1 LIMIT 10000"
-#     data = client.execute(query)
-#     df = pd.DataFrame(data, columns=['Name'])
+def query_clickhouse():
+    query = "SELECT full_name FROM table_dataset1 LIMIT 10000"
+    data = client.execute(query)
+    df = pd.DataFrame(data, columns=['Name'])
     
-#     return df
+    return df
 
 if __name__ == "__main__":
 
 
-    # print('querying the first db...')
-    # data = query_clickhouse()
-    # print(data)
-
-    data = pd.read_csv("input_data\main1.csv")['full_name']
+    print('querying the first db...')
+    data = query_clickhouse()
+    print(data)
 
     # очистка
     print("filtering data...")
-    # data['Name'] = data["Name"].apply(normalize_name)
-    data = data['full_name']
+    data['Name'] = data["Name"].apply(normalize_name)
+    data = data['Name']
     # print(data)
     
     print("processing...")
 
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    bin_path = os.path.join(script_dir, r"bin\test.exe")
+    bin_path = os.path.join(script_dir, r"bin/run")
 
 
     process = subprocess.Popen(

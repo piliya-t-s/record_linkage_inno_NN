@@ -34,10 +34,13 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get -y install gcc mono-mcs && \
     rm -rf /var/lib/apt/lists/*
 
-RUN gcc -o main.c run -lssl -lcrypto   
-    
+
 WORKDIR /app
 COPY . /app
+
+
+RUN gcc src/bin/main.c -o src/bin/run -lssl -lcrypto   
+RUN chmod +x src/bin/run
 
 # Creates a non-root user with an explicit UID and adds permission to access the /app folder
 # For more info, please refer to https://aka.ms/vscode-docker-python-configure-containers
